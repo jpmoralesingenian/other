@@ -70,7 +70,8 @@ function select_as_json($select, $params,$request,$response,$args) {
 /**
  * Insert into a TABLE using JSON assoc array as the info to insert
  */ 
-function insert_as_json($table, $json,$request,$response,$args) {
+function insert_or_update_as_json($table, $json,$request,$response,$args, $is_insert) {
+	error_log("Insert or update $is_insert" );	
 	$res2 = $response->withHeader("Access-Control-Allow-Origin", "*");
 	$res2 = $res2->withHeader("Access-Control-Allow-Headers", "X-Requested-With, Origin, Content-Type, Accept");
 	$res2 = $res2->withHeader("Content-Type", "application/json");
@@ -96,10 +97,24 @@ function insert_as_json($table, $json,$request,$response,$args) {
 		echo "\"}";
 		return;
 	}
-	$fields = implode(',',str_replace('when','_when',array_keys($json_decoded)));
-	$question_marks = str_repeat("?,",count($values_array)-1)."?";
-	$sql = "INSERT INTO $table ($fields) VALUES($question_marks)";
-	error_log("Inserting $sql\n");
+	if($is_insert>0) {
+		$fields = implode(',',str_replace('when','_when',array_keys($json_decoded)));
+		$question_marks = str_repeat("?,",count($values_array)-1)."?";
+		$sql = "INSERT INTO $table ($fields) VALUES($question_marks)";
+	} else {
+		$sql = "UPDATE $table SET ";
+		$has_some = false;
+		foreach($json_decoded as $key=>$value) {
+			if($has_some) $sql.=",";
+			$sql.="$key = ?";
+			$has_some = true;
+		}
+		$sql.= " WHERE _id = ".$json_decoded['_id'];
+	}
+	return other_as_json($sql, $values_array, $request, $response, $args);
+}
+function other_as_json($sql, $values_array, $request, $response, $args) {
+	error_log("RUNNING $sql\n");
 	$db = connect_db();
 	if(!$db) {
 		//Failed, leave
@@ -109,7 +124,8 @@ function insert_as_json($table, $json,$request,$response,$args) {
 	if(!sql_prepare_and_execute($db,$sql,$values_array)) {
 		return;	
  	} else {
-		echo "{\"result\":\"Sucessfully inserted on $table\"}";
+		$insert_id = $db->insert_id;
+		echo "{\"result\":\"Sucessfully ran SQL on  $sql\",\"id\": $insert_id}";
 	}
 	if($db) $db->close();
 	return $res2;
@@ -189,9 +205,16 @@ function entity($table) {
 			error_log("FindById on $table\n");
 			return select_as_json("SELECT * FROM  ".$table." WHERE _id = ?",array($args["id"]),$request,$response,$args);
 		},
+		"update"=> function($request, $response, $args) use($table) {
+			error_log("Update on $table\n");
+			return insert_or_update_as_json($table, $request->getBody(), $request, $response, $args, 0);
+		},
 		"insert"=> function($request, $response, $args) use($table) {	
 			error_log("Insert on $table\n");
-			return insert_as_json($table, $request->getBody(),$request,$response,$args);
+			return insert_or_update_as_json($table, $request->getBody(),$request,$response,$args, 1);
+		},
+		"delete"=> function($request, $response, $args) use($table) {
+			return other_as_json("DELETE FROM $table WHERE _id=?",array($args["id"]), $request, $response, $args);
 		},
 		"runSQL"=> function($sql,$params) {
 			$f = function($request,$response,$args) use($sql,$params) {
