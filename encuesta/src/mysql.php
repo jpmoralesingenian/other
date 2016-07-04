@@ -6,8 +6,8 @@ function connect_db() {
 	$pass = 'joshua01';
 	$database = 'joshua';
 	$connection = new mysqli($server, $user, $pass, $database);
-	if ($mysqli->connect_errno) {
-    		echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	if ($connection->connect_errno) {
+    		echo "Failed to connect to MySQL: (" . $connection->connect_errno . ") " . $connection->connect_error;
 		return false; 
 	}
 	return $connection;
@@ -30,7 +30,7 @@ function select_as_json($select, $params,$request,$response,$args) {
 	if(!$params) {	
 		$rs = $db->query($select);
 		if(!$rs) { 
-			echo "{\"error\":\"SELECT failed: (" . $mysqli->errno . ") " . $mysqli->error." ".$rs."\"}";	
+			echo "{\"error\":\"SELECT failed: (" . $db->errno . ") " . $db->error." ".$rs."\"}";	
 			return;
 		}
 		while($row = $rs->fetch_assoc()) {
@@ -128,7 +128,8 @@ function other_as_json($sql, $values_array, $request, $response, $args) {
 		echo "{\"result\":\"Sucessfully ran SQL on  $sql\",\"id\": $insert_id}";
 	}
 	if($db) $db->close();
-	return $res2;
+	$response = $response->withHeader("Accept", "application/json, text/javascript, */*");
+	return $response;
 }
 function refValues($arr)
 { 
@@ -161,7 +162,7 @@ function sql_prepare_and_execute($db,$select,$params) {
 	$prep = $db->prepare($select);
 	if(!$prep){
 		echo "{\"error\":\"";
-		echo "PREPARE failed: (" . $mysqli->errno . ") " . $mysqli->error." [".$select."]\"}";	
+		echo "PREPARE failed: (" . $db->errno . ") " . $db->error." [".$select."]\"}";	
 		return;
 	}
 	//Find the parameter type. We only support int and string
@@ -173,12 +174,12 @@ function sql_prepare_and_execute($db,$select,$params) {
 	$answer = call_user_func_array(array($prep,"bind_param"), refValues($parameters));
 	if(!$answer) {
 		echo "{\"error\":\"";
-		echo "BIND failed: (" . $mysqli->errno . ") " . $mysqli->error."\"}";	
+		echo "BIND failed: (" . $db->errno . ") " . $db->error."\"}";	
 		return false;
 	}
 	if(!$prep->execute()) {
 		echo "{\"error\":\"";
-		echo "EXECUTE failed: (" . $mysqli->errno . ") " . $mysqli->error."\"}";	
+		echo "EXECUTE failed: (" . $db->errno . ") " . $db->error."\"}";	
 		return false;
 		
 	}

@@ -81,8 +81,8 @@ function meseroForm(record) {
 }
 function meseroDelete(record) {
 	$.ajax({
-		type: 'DELETE',
-		url: rootURL + "meseros/"+record._id,
+		type: 'POST',
+		url: rootURL + "delete/meseros/"+record._id,
 		dataType: "json",
 		success: function() {
 			alert("Mesero borrado correctamente");
@@ -99,8 +99,8 @@ function meseroSave(record) {
 	id = $("#mesero_id").val();
 	data = JSON.stringify({"name": name, "locattion": locattion, "_id":id});
 	$.ajax({
-		type: 'PUT',
-		url: rootURL + "meseros",
+		type: 'POST',
+		url: rootURL + "put/meseros",
 		dataType: "json",
 		data: data,
 		success: function() {
@@ -142,7 +142,9 @@ function meseroAdd() {
 }
 function meseroUploadPicture(id) {
 	$("#mesero_id").val(id);
-	$("#meseroForm").submit();
+	if($("#mesero_file").val()) {
+		$("#meseroForm").submit();
+	}
 }
 function error_alert(xhr, status, error) {
   var err = xhr.responseText;

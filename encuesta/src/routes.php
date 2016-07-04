@@ -9,15 +9,15 @@ $app->get('/api/locations/[{id}]', $locations["findById"] );
 $app->post('/api/locations',$locations["insert"]);
 $app->get('/api/meseros', $meseros["findAll"] );
 $app->post('/api/meseros', $meseros["insert"] );
-$app->put('/api/meseros', $meseros["update"] );
+$app->post('/api/put/meseros', $meseros["update"] );
 $app->get('/api/meseros/[{id}]', $meseros["findById"] );
-$app->delete('/api/meseros/[{id}]', $meseros["delete"] );
+$app->post('/api/delete/meseros/[{id}]', $meseros["delete"] );
 $app->post('/api/picture', function ($request, $response, $args) {
 	$storage = new \Upload\Storage\FileSystem('/Users/foxtrot/Documents/code/other/encuesta/public/meseros', true);
 	$file = new \Upload\File('picture', $storage);
 	$new_filename = $request->getParsedBody()['id'];
 	$file->setName($new_filename);
-	error_log("Uploading ".$new_filename);
+	$file->setExtension("jpg");
 	try {
 	    // Success!
     	$file->upload();
