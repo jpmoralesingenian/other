@@ -25,26 +25,19 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			
 			<!-- Header -->
 			<div id="header">
 				<div class="container"> 
-					
 					<!-- Logo -->
 					<div id="logo">
 						<h1><a href="#">Encuestas</a></h1>
 					</div>
-					
 					<!-- Nav -->
-
 				</div>
 			</div>
 			<!-- /Header -->
-			
 			<div id="page" style="margin-top:-61px;">
-
 				<div class="container">
-
 					<div class="row">
 						<div class="2u chart-wrapper" id="menuselect" style="background-color: #33CC99; height: 60px;">
 							<div class="chart-title">  <strong> Mesero </strong> </div>					
@@ -58,19 +51,13 @@
 						<div class="2u chart-wrapper" id="score-average">
 							<div class="chart-title">  <strong> Puntaje Promedio</strong> </div>					
 						</div>
-
-
-					<div class="3u dc-data-count dc-chart" id="row-selection">
-						<span class="filter-count">_</span> seleccionados de <span class="total-count">_</span> encuestas |
-						<span>
-							<a href='javascript:dc.filterAll();dc.redrawAll();'><font color="#33CC99">Reset All</font></a>
-						</span>
+						<div class="3u dc-data-count dc-chart" id="row-selection">
+							<span class="filter-count">_</span> seleccionados de <span class="total-count">_</span> encuestas |
+							<span>
+								<a href='javascript:dc.filterAll();dc.redrawAll();'><font color="#33CC99">Reset All</font></a>
+							</span>
+						</div>
 					</div>
-							
-
-				</div>
-
-
 					<div class="row">
 						<div class="4u chart-wrapper"  id="date-chart">
 							<div class="chart-title bold"> <strong> Encuestas </strong></div>
@@ -85,10 +72,15 @@
 							<div class="chart-title"> <strong> Mesero </strong> </div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="8u chart-wrapper">
+							<div class="chart-title"><strong>Detalles</strong></div>
+							<table class="dc-data-table" id="comments-table">
+    						</table>
+						</div>
+					</div>
 				</div>	
 			</div>
-
-			
 		</div>
 
 <script src='js/crossfilter.js' type='text/javascript'></script>

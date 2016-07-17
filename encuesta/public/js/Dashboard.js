@@ -45,6 +45,7 @@ function makeGraphs(error, apiData) {
 	var totalProjects = dc.numberDisplay("#total-projects");
 	var scoreAverage = dc.numberDisplay("#score-average");
 	var meseroDonations = dc.barChart("#mesero-donations");
+	var commentsTable = dc.dataTable("#comments-table");
 
   selectField = dc.selectMenu('#menuselect')
         .dimension(mesero)
@@ -110,6 +111,29 @@ function makeGraphs(error, apiData) {
         .renderVerticalGridLines(true)
         .ordering(function(d){return d.value;})
         .yAxis().tickFormat(d3.format("s"));
+	
+	dimTable = ndx.dimension(function(d) { return d._id;}) 
+	groupTable = function (d) { return d.mesero_location; }
+    commentsTable
+	.dimension(dimTable)
+	.group(groupTable)
+	.columns([
+		{ label: "Fecha",
+		  format: function (d) { return d._when.substring(0,10); } 
+		},
+		{ label: "Puntaje",
+		  format: function (d) { return d.score; }
+		}, 
+		{ label: "Punto",
+		  format: function (d) { return d.mesero_location; }
+		},
+		{ label: "Mesero", 
+		  format: function(d) { return d.mesero_name; }
+		},
+		{ label: "Comentarios",
+		  format: function(d) { return d.comments; }
+		}
+	])	
 
     dc.renderAll();
 

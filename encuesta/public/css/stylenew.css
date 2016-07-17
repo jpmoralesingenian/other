@@ -268,7 +268,6 @@ input[type='submit']:hover {
      width: 100%;
      height: 40px;*/
 }
-
 .wincere-logo {
     background: url(../img/wincere-logo-new.png) no-repeat right 7px;
     display: table;
@@ -326,3 +325,23 @@ a {
         padding: 19px;
         border-radius: 12px;
     }
+.dc-data-table { 
+	width: 100%;
+	border:1px solid black;
+}
+.dc-table-label { 
+	padding: 5px;
+	color: black;
+	background-color: #808080;
+}
+.dc-table-head { 
+	border:1px solid black;
+	padding: 3px;
+	color: black;
+	font-weight: bold;
+}
+.dc-table-column { 
+	border:1px solid black;
+	padding: 3px;
+	color: black;
+}
