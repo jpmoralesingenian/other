@@ -44,7 +44,7 @@ function makeGraphs(error, apiData) {
 	var scoreChart = dc.rowChart("#score-chart");
 	var totalProjects = dc.numberDisplay("#total-projects");
 	var scoreAverage = dc.numberDisplay("#score-average");
-	var meseroDonations = dc.barChart("#mesero-donations");
+	var meseroDonations = dc.rowChart("#mesero-donations");
 	var commentsTable = dc.dataTable("#comments-table");
 
   selectField = dc.selectMenu('#menuselect')
@@ -98,20 +98,9 @@ function makeGraphs(error, apiData) {
     meseroDonations
     	//.width(800)
         .height(220)
-        .transitionDuration(1000)
         .dimension(mesero)
         .group(totalScoreMesero)
         .margins({top: 10, right: 50, bottom: 30, left: 50})
-        .centerBar(false)
-        .gap(5)
-        .elasticY(true)
-        .x(d3.scale.ordinal().domain(mesero))
-        .xUnits(dc.units.ordinal)
-        .renderHorizontalGridLines(true)
-        .renderVerticalGridLines(true)
-        .ordering(function(d){return d.value;})
-        .yAxis().tickFormat(d3.format("s"));
-	
 	dimTable = ndx.dimension(function(d) { return d._id;}) 
 	groupTable = function (d) { return d.mesero_location; }
     commentsTable
@@ -119,7 +108,7 @@ function makeGraphs(error, apiData) {
 	.group(groupTable)
 	.columns([
 		{ label: "Fecha",
-		  format: function (d) { return d._when.substring(0,10); } 
+		  format: function (d) { return d._when.substring(0,16); } 
 		},
 		{ label: "Puntaje",
 		  format: function (d) { return d.score; }
@@ -129,6 +118,9 @@ function makeGraphs(error, apiData) {
 		},
 		{ label: "Mesero", 
 		  format: function(d) { return d.mesero_name; }
+		},
+		{ label: "Correo",
+		  format: function(d) { return d.email; }
 		},
 		{ label: "Comentarios",
 		  format: function(d) { return d.comments; }
