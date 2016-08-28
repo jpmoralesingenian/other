@@ -146,6 +146,41 @@ function meseroUploadPicture(id) {
 		$("#meseroForm").submit();
 	}
 }
+function downloadCSV() {
+	$.ajax({
+		type: 'GET',
+		url: rootURL + "encuestas-report",
+		dataType: "json",
+		success: json2csv,
+		error: error_alert
+	});	
+}
+function json2csv(data) {
+	var  getKeys = function(obj){
+		var keys = [];
+		for(var key in obj){
+			keys.push(key);
+		}
+		return keys.join();
+	};
+	var array = typeof data != 'object' ? JSON.parse(data) : data;
+	var str = '';
+	for (var i = 0; i < array.length; i++) {
+    	var line = '';
+		for (var index in array[i]) {
+      		if(line != '') line += ','
+      		line += array[i][index];
+    	}
+    	str += line + '\r\n';
+	}
+	str = getKeys(data[0]) + '\r\n' + str;
+	var a = document.createElement('a');
+	var blob = new Blob([str], {'type':'application\/octet-stream'});
+	a.href = window.URL.createObjectURL(blob);
+	a.download = 'export.csv';
+	a.click();
+	return true;
+}
 function error_alert(xhr, status, error) {
   var err = xhr.responseText;
   alert(err);
